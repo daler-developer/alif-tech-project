@@ -22,6 +22,7 @@ const handleDelete = () => {
 };
 
 const handleEdit = () => {
+  store.commit("quotes/setQuoteEditing", props.quote);
   store.commit("ui/setIsEditQuoteModalVisible", true);
 };
 </script>

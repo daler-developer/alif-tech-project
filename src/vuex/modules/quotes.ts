@@ -8,6 +8,7 @@ export interface IState {
     list: IQuote[];
     isFetching: boolean;
   };
+  quoteEditing: IQuote | null;
 }
 
 const quotesModule: Module<IState, IRootState> = {
@@ -17,6 +18,7 @@ const quotesModule: Module<IState, IRootState> = {
       list: [],
       isFetching: false,
     },
+    quoteEditing: null,
   },
   mutations: {
     setIsFeedQuotesFetching(state, payload: boolean) {
@@ -28,6 +30,12 @@ const quotesModule: Module<IState, IRootState> = {
     deleteQuote(state, quoteId: string) {
       state.feed.list = state.feed.list.filter((quote) => quote.id !== quoteId);
     },
+    setQuoteEditing(state, quote: IQuote) {
+      state.quoteEditing = quote;
+    },
+    // editQuote(state, { text, author, genres, quoteId }: { quoteId: string, text: string, author: string, genres: string }) {
+
+    // }
   },
   actions: {
     async createQuote(
@@ -52,6 +60,18 @@ const quotesModule: Module<IState, IRootState> = {
     async deleteQuote(context, quoteId: string) {
       context.commit("deleteQuote", quoteId);
       await quotesService.deleteQuote({ quoteId });
+    },
+    async editQuote(
+      context,
+      {
+        newValues,
+        quoteId,
+      }: {
+        quoteId: string;
+        newValues: { text: string; author: string; genres: string[] };
+      }
+    ) {
+      await quotesService.editQuote({ newValues, quoteId });
     },
   },
 };

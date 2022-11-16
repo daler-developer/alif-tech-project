@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import useTypedStore from "@/composables/useTypedStore";
-import CreateQuoteForm from "../forms/CreateQuoteForm.vue";
+import CreateOrEditQuoteForm from "../forms/CreateOrEditQuoteForm.vue";
 
 const store = useTypedStore();
 
@@ -17,6 +17,6 @@ const visible = computed<boolean>({
 
 <template>
   <AModal v-model:visible="visible" :footer="null" title="Create quote">
-    <CreateQuoteForm />
+    <CreateOrEditQuoteForm mode="create" />
   </AModal>
 </template>

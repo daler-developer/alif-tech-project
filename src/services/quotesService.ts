@@ -6,6 +6,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 
 interface CreateQuoteDto {
@@ -39,6 +40,20 @@ class QuotesService {
 
   async deleteQuote({ quoteId }: { quoteId: string }) {
     await deleteDoc(doc(db, "quotes", quoteId));
+  }
+
+  async editQuote({
+    newValues,
+    quoteId,
+  }: {
+    quoteId: string;
+    newValues: { text: string; author: string; genres: string[] };
+  }) {
+    await updateDoc(doc(db, "quotes", quoteId), {
+      text: newValues.text,
+      author: newValues.author,
+      genres: newValues.genres,
+    });
   }
 }
 
