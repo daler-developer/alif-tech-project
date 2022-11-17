@@ -2,12 +2,32 @@
 import useTypedStore from "@/composables/useTypedStore";
 import { Modal } from "ant-design-vue";
 import type { IQuote } from "@/models";
+import {
+  DeleteOutlined as DeleteIcon,
+  EditOutlined as EditIcon,
+} from "@ant-design/icons-vue";
+import { computed } from "vue";
+import {
+  formatFirebaseTimestamp,
+  convertArrayToCommaSeperatedList,
+} from "@/utils/helpers";
 
 const store = useTypedStore();
 
 const props = defineProps<{
   quote: IQuote;
 }>();
+
+const formatedCreatedAt = computed(() =>
+  formatFirebaseTimestamp(props.quote.createdAt)
+);
+const formatedUpdatedAt = computed(() =>
+  formatFirebaseTimestamp(props.quote.updatedAt)
+);
+const hasGenres = computed(() => Boolean(props.quote.genres.length));
+const genresList = computed(() =>
+  convertArrayToCommaSeperatedList(props.quote.genres)
+);
 
 const handleDelete = () => {
   Modal.confirm({
@@ -28,9 +48,38 @@ const handleEdit = () => {
 </script>
 
 <template>
-  <div class="p-[5px] shadow-sm">
-    {{ props.quote.text }}
-    <AButton @click="handleDelete"> Delete </AButton>
-    <AButton @click="handleEdit"> Edit </AButton>
+  <div class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px]">
+    <ATypographyText strong>{{ quote.author }}</ATypographyText>
+
+    <a-typography-paragraph>
+      {{ quote.text }}
+    </a-typography-paragraph>
+
+    <a-typography-text type="secondary">
+      Created: {{ formatedCreatedAt }}
+    </a-typography-text>
+
+    <div class=""></div>
+    <a-typography-text type="secondary">
+      Updated: {{ formatedUpdatedAt }}
+    </a-typography-text>
+
+    <div class=""></div>
+    <a-typography-text v-if="hasGenres" type="secondary">
+      Genres: {{ genresList }}
+    </a-typography-text>
+
+    <div class="mt-[5px] flex gap-[5px]">
+      <AButton @click="handleDelete">
+        <template #icon>
+          <delete-icon />
+        </template>
+      </AButton>
+      <AButton @click="handleEdit">
+        <template #icon>
+          <EditIcon />
+        </template>
+      </AButton>
+    </div>
   </div>
 </template>

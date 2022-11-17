@@ -17,6 +17,6 @@ const visible = computed<boolean>({
 
 <template>
   <AModal v-model:visible="visible" :footer="null" title="Create quote">
-    <CreateOrEditQuoteForm mode="create" />
+    <CreateOrEditQuoteForm mode="create" @submit-succeeded="visible = false" />
   </AModal>
 </template>

@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import useTypedStore from "@/composables/useTypedStore";
 import { computed } from "@vue/reactivity";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive, watch } from "vue";
 import QuoteCard from "../QuoteCard.vue";
 
 const store = useTypedStore();
 
-const searchValue = ref<string>("");
+const filterObj = reactive({
+  search: "",
+});
 
 onMounted(() => {
-  store.dispatch("quotes/getQuotes");
+  getQuotes();
 });
+
+watch(filterObj, () => getQuotes());
+
+const getQuotes = () => store.dispatch("quotes/getQuotes", filterObj);
 
 const quotes = computed(() => store.state.quotes.feed.list);
 const isFetchingQuotes = computed(() => store.state.quotes.feed.isFetching);
@@ -26,7 +32,7 @@ const handleCreateQuoteBtnClick = () => {
   >
 
   <div class="mt-[10px] flex gap-[5px]">
-    <AInputSearch placeholder="Search" v-model:value="searchValue" />
+    <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
     <ASelect />
   </div>
 

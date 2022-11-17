@@ -21,6 +21,7 @@ const visible = computed<boolean>({
       v-if="store.state.quotes.quoteEditing"
       mode="edit"
       :quoteEditing="store.state.quotes.quoteEditing"
+      @submit-succeeded="visible = false"
     />
   </AModal>
 </template>

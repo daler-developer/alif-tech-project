@@ -1,4 +1,5 @@
 import type { IQuote } from "@/models";
+import authorsService from "@/services/authorsService";
 import quotesService from "@/services/quotesService";
 import type { Module } from "vuex";
 import type { IRootState } from "../store";
@@ -9,6 +10,10 @@ export interface IState {
     isFetching: boolean;
   };
   quoteEditing: IQuote | null;
+  randomQuote: {
+    isFetching: boolean;
+    data: IQuote | null;
+  };
 }
 
 const quotesModule: Module<IState, IRootState> = {
@@ -19,6 +24,10 @@ const quotesModule: Module<IState, IRootState> = {
       isFetching: false,
     },
     quoteEditing: null,
+    randomQuote: {
+      data: null,
+      isFetching: false,
+    },
   },
   mutations: {
     setIsFeedQuotesFetching(state, payload: boolean) {
@@ -33,9 +42,23 @@ const quotesModule: Module<IState, IRootState> = {
     setQuoteEditing(state, quote: IQuote) {
       state.quoteEditing = quote;
     },
-    // editQuote(state, { text, author, genres, quoteId }: { quoteId: string, text: string, author: string, genres: string }) {
-
-    // }
+    setIsFetchingRandomQuote(state, to: boolean) {
+      state.randomQuote.isFetching = to;
+    },
+    setRandomQuote(state, quote: IQuote) {
+      state.randomQuote.data = quote;
+    },
+    editQuote(
+      state,
+      { quoteId, newQuote }: { quoteId: string; newQuote: IQuote }
+    ) {
+      state.feed.list = state.feed.list.map((quote) => {
+        if (quote.id === quoteId) {
+          return newQuote;
+        }
+        return quote;
+      });
+    },
   },
   actions: {
     async createQuote(
@@ -46,12 +69,19 @@ const quotesModule: Module<IState, IRootState> = {
         genres,
       }: { text: string; author: string; genres: string[] }
     ) {
-      await quotesService.createQuote({ author, text, genres });
+      const newQuote = await quotesService.createQuote({
+        author,
+        text,
+        genres,
+      });
+      authorsService.createAuthorIfNotExists({ name: author });
+
+      context.commit("setFeedQuotes", [...context.state.feed.list, newQuote]);
     },
-    async getQuotes(context) {
+    async getQuotes(context, { search }: { search: string }) {
       context.commit("setIsFeedQuotesFetching", true);
 
-      const quotes = await quotesService.getQuotes({});
+      const quotes = await quotesService.getQuotes({ search });
 
       context.commit("setFeedQuotes", quotes);
 
@@ -71,7 +101,23 @@ const quotesModule: Module<IState, IRootState> = {
         newValues: { text: string; author: string; genres: string[] };
       }
     ) {
-      await quotesService.editQuote({ newValues, quoteId });
+      const updatedQuote = await quotesService.editQuote({
+        newValues,
+        quoteId,
+      });
+      context.commit("editQuote", { quoteId, newQuote: updatedQuote });
+    },
+    async getRandomQuote(context) {
+      context.commit("setIsFetchingRandomQuote", true);
+
+      const randomQuote = await quotesService.getRandomQuote();
+
+      context.commit("setRandomQuote", randomQuote);
+
+      context.commit("setIsFetchingRandomQuote", false);
+    },
+    async incrementQuoteRandomCount(context, quoteId: string) {
+      await quotesService.incrementQuoteRandomCount(quoteId);
     },
   },
 };

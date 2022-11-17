@@ -2,12 +2,15 @@
 import useTypedStore from "@/composables/useTypedStore";
 import type { IQuote } from "@/models";
 import { useField, useForm } from "vee-validate";
+import { computed } from "vue";
 import * as yup from "yup";
 
 const props = defineProps<{
   mode: "create" | "edit";
   quoteEditing?: IQuote;
 }>();
+
+const emit = defineEmits(["submitSucceeded"]);
 
 interface IFormValues {
   text: string;
@@ -22,20 +25,23 @@ const validationSchema = yup.object({
   author: yup.string().trim().required(),
 });
 
+const initialValues = computed(() => {
+  return props.mode === "create"
+    ? {
+        author: "",
+        text: "",
+        genres: [],
+      }
+    : {
+        author: props.quoteEditing!.author,
+        text: props.quoteEditing!.text,
+        genres: props.quoteEditing!.genres,
+      };
+});
+
 const form = useForm<IFormValues>({
   validationSchema,
-  initialValues:
-    props.mode === "create"
-      ? {
-          author: "",
-          text: "",
-          genres: [],
-        }
-      : {
-          author: props.quoteEditing!.author,
-          text: props.quoteEditing!.text,
-          genres: props.quoteEditing!.genres,
-        },
+  initialValues,
 });
 
 const textField = useField<string>("text");
@@ -69,6 +75,7 @@ const handleSubmit = form.handleSubmit(async (values) => {
   }
 
   form.resetForm();
+  emit("submitSucceeded");
 });
 
 const handleGenresInputChange = (genres: string[]) => {
@@ -97,7 +104,13 @@ const handleGenresInputChange = (genres: string[]) => {
       :value="genresField.value.value"
       @change="handleGenresInputChange"
     />
-    <AButton class="mt-[10px]" type="primary" block html-type="submit">
+    <AButton
+      :loading="form.isSubmitting.value"
+      class="mt-[10px]"
+      type="primary"
+      block
+      html-type="submit"
+    >
       <template v-if="mode === 'create'"> Create </template>
       <template v-else> Edit </template>
     </AButton>

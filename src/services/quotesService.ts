@@ -1,5 +1,6 @@
 import { db } from "@/firebase/services";
 import type { IQuote } from "@/models";
+import { getRandomInt } from "@/utils/helpers";
 import {
   collection,
   addDoc,
@@ -7,6 +8,13 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  getDoc,
+  query,
+  orderBy,
+  limit,
+  increment,
+  startAt,
+  where,
 } from "firebase/firestore";
 
 interface CreateQuoteDto {
@@ -15,19 +23,34 @@ interface CreateQuoteDto {
   genres: string[];
 }
 
-interface GetQuotesDto {}
+interface GetQuotesDto {
+  search: string;
+}
 
 class QuotesService {
-  async createQuote({ author, text, genres }: CreateQuoteDto) {
-    await addDoc(collection(db, "quotes"), {
+  async createQuote({ author, text, genres }: CreateQuoteDto): Promise<IQuote> {
+    const createdDoc = await addDoc(collection(db, "quotes"), {
       author,
       text,
       genres,
+      randomCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
+
+    const doc = await getDoc(createdDoc);
+
+    return { id: doc.id, ...(doc.data() as any) };
   }
 
-  async getQuotes({}: GetQuotesDto) {
-    const docs = await getDocs(collection(db, "quotes"));
+  async getQuotes({ search }: GetQuotesDto) {
+    const queries: any[] = [];
+
+    if (search) {
+      queries.push(where("text", "==", search));
+    }
+
+    const docs = await getDocs(query(collection(db, "quotes"), ...queries));
 
     const quotes: IQuote[] = [];
 
@@ -48,12 +71,52 @@ class QuotesService {
   }: {
     quoteId: string;
     newValues: { text: string; author: string; genres: string[] };
-  }) {
+  }): Promise<IQuote> {
     await updateDoc(doc(db, "quotes", quoteId), {
       text: newValues.text,
       author: newValues.author,
       genres: newValues.genres,
+      updatedAt: new Date(),
     });
+
+    return (await this.getQuoteById(quoteId))!;
+  }
+
+  async getQuoteById(quoteId: string): Promise<IQuote | null> {
+    const docRef = await getDoc(doc(db, "quotes", quoteId));
+
+    if (docRef.exists()) {
+      return { id: docRef.id, ...(docRef.data() as any) };
+    }
+
+    return null;
+  }
+
+  async incrementQuoteRandomCount(quoteId: string) {
+    await updateDoc(doc(db, "quotes", quoteId), {
+      randomCount: increment(1),
+    });
+  }
+
+  async getRandomQuote() {
+    const notSelectedDocs = await getDocs(
+      query(collection(db, "quotes"), where("randomCount", "==", 0))
+    );
+
+    const notSelectedQuotes: IQuote[] = [];
+
+    notSelectedDocs.forEach((doc) =>
+      notSelectedQuotes.push({ ...(doc.data() as any), id: doc.id })
+    );
+
+    let randomQuote: IQuote | null =
+      notSelectedQuotes[getRandomInt(0, notSelectedQuotes.length)];
+
+    if (randomQuote) {
+      await this.incrementQuoteRandomCount(randomQuote.id);
+    }
+
+    return randomQuote;
   }
 }
 
