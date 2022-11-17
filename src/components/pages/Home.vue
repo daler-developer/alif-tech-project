@@ -10,11 +10,15 @@ const store = useTypedStore();
 interface IFilterObj {
   search: string;
   dateTimeRange: [Dayjs, Dayjs] | null;
+  author: string | undefined;
+  genre: string | undefined;
 }
 
 const filterObj = reactive<IFilterObj>({
   search: "",
   dateTimeRange: null,
+  author: undefined,
+  genre: undefined,
 });
 
 onMounted(() => {
@@ -24,9 +28,6 @@ onMounted(() => {
 watch(filterObj, () => getQuotes());
 
 const getQuotes = () => {
-  if (filterObj.dateTimeRange) {
-    console.log(filterObj.dateTimeRange[0].format("DD/MM/YYYY HH:mm:ss"));
-  }
   store.dispatch("quotes/getQuotes", filterObj);
 };
 
@@ -43,10 +44,23 @@ const handleCreateQuoteBtnClick = () => {
     >Create</AButton
   >
 
-  <div class="mt-[10px] flex gap-[5px]">
+  <div class="mt-[10px] flex gap-[5px] tablet:flex-col">
     <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
-    <ASelect placeholder="Genre" />
-    <a-range-picker v-model:value="filterObj.dateTimeRange" show-time />
+    <a-select allow-clear v-model:value="filterObj.author" placeholder="Author">
+      <a-select-option value="daler">daler</a-select-option>
+      <a-select-option value="aziz">aziz</a-select-option>
+      <a-select-option value="zarina">zarina</a-select-option>
+    </a-select>
+    <a-select allow-clear v-model:value="filterObj.genre" placeholder="Genre">
+      <a-select-option value="g1">g1</a-select-option>
+      <a-select-option value="g2">g2</a-select-option>
+      <a-select-option value="g3">g3</a-select-option>
+    </a-select>
+    <a-range-picker
+      allow-clear
+      v-model:value="filterObj.dateTimeRange"
+      show-time
+    />
   </div>
 
   <div class="mt-[10px]">

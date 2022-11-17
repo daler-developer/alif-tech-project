@@ -7,6 +7,7 @@ export interface IQuote {
   genres: string[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  isShownInRandom: boolean;
 }
 
 export interface IAuthor {

@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import useTypedStore from "@/composables/useTypedStore";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import QuoteCard from "../QuoteCard.vue";
 
 const store = useTypedStore();
 
 const isFetching = computed(() => store.state.quotes.randomQuote.isFetching);
 const quote = computed(() => store.state.quotes.randomQuote.data);
+
+onMounted(() => getRandomQuote());
 
 const getRandomQuote = async () => {
   await store.dispatch("quotes/getRandomQuote");

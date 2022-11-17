@@ -31,7 +31,7 @@ class QuotesService {
       author,
       text,
       genres,
-      randomCount: 0,
+      isShownInRandom: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -44,9 +44,13 @@ class QuotesService {
   async getQuotes({
     search,
     dateTimeRange,
+    author,
+    genre,
   }: {
     search: string;
     dateTimeRange: [Dayjs, Dayjs];
+    author: string | undefined;
+    genre: string | undefined;
   }) {
     const queries: any[] = [];
 
@@ -57,6 +61,14 @@ class QuotesService {
     if (dateTimeRange) {
       queries.push(where("createdAt", ">=", dateTimeRange[0].toDate()));
       queries.push(where("createdAt", "<=", dateTimeRange[1].toDate()));
+    }
+
+    if (author) {
+      queries.push(where("author", "==", author));
+    }
+
+    if (genre) {
+      queries.push(where("genres", "array-contains", genre));
     }
 
     const docs = await getDocs(query(collection(db, "quotes"), ...queries));
@@ -107,23 +119,37 @@ class QuotesService {
     });
   }
 
-  async getRandomQuote() {
-    const notSelectedDocs = await getDocs(
-      query(collection(db, "quotes"), where("randomCount", "==", 0))
-    );
+  async quoteNotShownInRandomExists() {
+    return !(
+      await getDocs(
+        query(collection(db, "quotes"), where("isShownInRandom", "==", false))
+      )
+    ).empty;
+  }
 
-    const notSelectedQuotes: IQuote[] = [];
+  async getRandomQuote(): Promise<IQuote | null> {
+    const quotes: IQuote[] = [];
 
-    notSelectedDocs.forEach((doc) =>
-      notSelectedQuotes.push({ ...(doc.data() as any), id: doc.id })
-    );
+    const quoteNotShownInRandomExists =
+      await this.quoteNotShownInRandomExists();
 
-    let randomQuote: IQuote | null =
-      notSelectedQuotes[getRandomInt(0, notSelectedQuotes.length)];
+    if (quoteNotShownInRandomExists) {
+      const docs = await getDocs(
+        query(collection(db, "quotes"), where("isShownInRandom", "==", false))
+      );
 
-    if (randomQuote) {
-      await this.incrementQuoteRandomCount(randomQuote.id);
+      docs.forEach((doc) =>
+        quotes.push({ id: doc.id, ...(doc.data() as any) })
+      );
+    } else {
+      const docs = await getDocs(query(collection(db, "quotes")));
+
+      docs.forEach((doc) =>
+        quotes.push({ id: doc.id, ...(doc.data() as any) })
+      );
     }
+
+    const randomQuote = quotes[getRandomInt(0, quotes.length - 1)];
 
     return randomQuote;
   }

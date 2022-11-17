@@ -3,6 +3,14 @@ module.exports = {
   theme: {
     extend: {},
   },
+  theme: {
+    extend: {
+      screens: {
+        tablet: { max: "769px" },
+        mobile: { max: "480px" },
+      },
+    },
+  },
   plugins: [],
   corePlugins: {
     preflight: false,

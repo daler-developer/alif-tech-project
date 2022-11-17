@@ -82,7 +82,12 @@ const quotesModule: Module<IState, IRootState> = {
     },
     async getQuotes(
       context,
-      filterObj: { search: string; dateTimeRange: [Dayjs, Dayjs] }
+      filterObj: {
+        search: string;
+        dateTimeRange: [Dayjs, Dayjs];
+        author: string | undefined;
+        genre: string | undefined;
+      }
     ) {
       context.commit("setIsFeedQuotesFetching", true);
 

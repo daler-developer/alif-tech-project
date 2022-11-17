@@ -8,7 +8,7 @@ export const getRandomInt = (min: number, max: number) => {
 };
 
 export const formatFirebaseTimestamp = (timestamp: Timestamp) => {
-  return dayjs(timestamp.toDate()).format("DD/MM/YYYY HH:mm:ss");
+  return dayjs(timestamp.toDate()).format("DD:MM:YYYY HH:mm:ss");
 };
 
 export const convertArrayToCommaSeperatedList = (list: string[]) => {
