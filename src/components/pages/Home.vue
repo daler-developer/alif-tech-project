@@ -3,11 +3,18 @@ import useTypedStore from "@/composables/useTypedStore";
 import { computed } from "@vue/reactivity";
 import { onMounted, ref, reactive, watch } from "vue";
 import QuoteCard from "../QuoteCard.vue";
+import type { Dayjs } from "dayjs";
 
 const store = useTypedStore();
 
-const filterObj = reactive({
+interface IFilterObj {
+  search: string;
+  dateTimeRange: [Dayjs, Dayjs] | null;
+}
+
+const filterObj = reactive<IFilterObj>({
   search: "",
+  dateTimeRange: null,
 });
 
 onMounted(() => {
@@ -16,7 +23,12 @@ onMounted(() => {
 
 watch(filterObj, () => getQuotes());
 
-const getQuotes = () => store.dispatch("quotes/getQuotes", filterObj);
+const getQuotes = () => {
+  if (filterObj.dateTimeRange) {
+    console.log(filterObj.dateTimeRange[0].format("DD/MM/YYYY HH:mm:ss"));
+  }
+  store.dispatch("quotes/getQuotes", filterObj);
+};
 
 const quotes = computed(() => store.state.quotes.feed.list);
 const isFetchingQuotes = computed(() => store.state.quotes.feed.isFetching);
@@ -33,7 +45,8 @@ const handleCreateQuoteBtnClick = () => {
 
   <div class="mt-[10px] flex gap-[5px]">
     <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
-    <ASelect />
+    <ASelect placeholder="Genre" />
+    <a-range-picker v-model:value="filterObj.dateTimeRange" show-time />
   </div>
 
   <div class="mt-[10px]">

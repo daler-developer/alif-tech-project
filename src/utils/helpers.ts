@@ -14,3 +14,7 @@ export const formatFirebaseTimestamp = (timestamp: Timestamp) => {
 export const convertArrayToCommaSeperatedList = (list: string[]) => {
   return list.join(", ");
 };
+
+export const removeDuplicatesFromArray = (array: any[]) => {
+  return [...new Set(array)];
+};

@@ -7,7 +7,7 @@ import EditQuoteModal from "./components/modals/EditQuoteModal.vue";
 </script>
 
 <template>
-  <div class="pt-[80px]">
+  <div class="pt-[80px] pb-[20px]">
     <Header />
     <CreateQuoteModal />
     <EditQuoteModal />

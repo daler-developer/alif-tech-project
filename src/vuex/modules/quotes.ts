@@ -3,6 +3,7 @@ import authorsService from "@/services/authorsService";
 import quotesService from "@/services/quotesService";
 import type { Module } from "vuex";
 import type { IRootState } from "../store";
+import type { Dayjs } from "dayjs";
 
 export interface IState {
   feed: {
@@ -74,14 +75,18 @@ const quotesModule: Module<IState, IRootState> = {
         text,
         genres,
       });
-      authorsService.createAuthorIfNotExists({ name: author });
+      await authorsService.createAuthorIfNotExists({ name: author });
+      await authorsService.addGenresToAuthor({ authorName: author, genres });
 
       context.commit("setFeedQuotes", [...context.state.feed.list, newQuote]);
     },
-    async getQuotes(context, { search }: { search: string }) {
+    async getQuotes(
+      context,
+      filterObj: { search: string; dateTimeRange: [Dayjs, Dayjs] }
+    ) {
       context.commit("setIsFeedQuotesFetching", true);
 
-      const quotes = await quotesService.getQuotes({ search });
+      const quotes = await quotesService.getQuotes(filterObj);
 
       context.commit("setFeedQuotes", quotes);
 

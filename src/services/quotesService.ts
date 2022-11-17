@@ -16,15 +16,13 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
+import authorsService from "./authorsService";
+import type { Dayjs } from "dayjs";
 
 interface CreateQuoteDto {
   text: string;
   author: string;
   genres: string[];
-}
-
-interface GetQuotesDto {
-  search: string;
 }
 
 class QuotesService {
@@ -43,11 +41,22 @@ class QuotesService {
     return { id: doc.id, ...(doc.data() as any) };
   }
 
-  async getQuotes({ search }: GetQuotesDto) {
+  async getQuotes({
+    search,
+    dateTimeRange,
+  }: {
+    search: string;
+    dateTimeRange: [Dayjs, Dayjs];
+  }) {
     const queries: any[] = [];
 
     if (search) {
       queries.push(where("text", "==", search));
+    }
+
+    if (dateTimeRange) {
+      queries.push(where("createdAt", ">=", dateTimeRange[0].toDate()));
+      queries.push(where("createdAt", "<=", dateTimeRange[1].toDate()));
     }
 
     const docs = await getDocs(query(collection(db, "quotes"), ...queries));

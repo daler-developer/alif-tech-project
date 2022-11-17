@@ -12,4 +12,5 @@ export interface IQuote {
 export interface IAuthor {
   id: string;
   name: string;
+  genres: string[];
 }
