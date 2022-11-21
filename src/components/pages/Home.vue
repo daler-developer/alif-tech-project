@@ -5,6 +5,8 @@ import { onMounted, ref, reactive, watch } from "vue";
 import QuoteCard from "../QuoteCard.vue";
 import type { Dayjs } from "dayjs";
 import { Modal } from "ant-design-vue";
+import { Timestamp } from "@firebase/firestore";
+import { formatFirebaseTimestamp } from "@/utils/helpers";
 
 const store = useTypedStore();
 
@@ -66,6 +68,8 @@ const isFetchingQuotes = computed(() => store.state.quotes.feed.isFetching);
 const authors = computed(() => store.state.authors.dropdown.list);
 const genres = computed(() => store.state.genres.dropdown.list);
 
+const hasQuotes = computed(() => Boolean(quotes.value.length));
+
 const handleCreateQuoteBtnClick = () => {
   store.commit("ui/setIsCreateQuoteModalVisible", true);
 };
@@ -101,11 +105,6 @@ const handleCreateQuoteBtnClick = () => {
         genre
       }}</a-select-option>
     </a-select>
-    <a-range-picker
-      allow-clear
-      v-model:value="filterObj.dateTimeRange"
-      show-time
-    />
     <a-select
       class="w-[150px]"
       allow-clear
@@ -121,14 +120,20 @@ const handleCreateQuoteBtnClick = () => {
       >
       <a-select-option value="udpated-at:asc">Updated at(asc)</a-select-option>
     </a-select>
+    <a-button html-type="button" @click="getPageAllResources()"
+      >Reload</a-button
+    >
   </div>
 
   <div class="mt-[10px]">
     <div v-if="isFetchingQuotes" class="text-center">
       <ASpin />
     </div>
-    <div v-else class="flex flex-col gap-[10px]">
-      <QuoteCard v-for="quote in quotes" :key="quote.id" :quote="quote" />
-    </div>
+    <template v-else>
+      <div v-if="hasQuotes" class="flex flex-col gap-[10px]">
+        <QuoteCard v-for="quote in quotes" :key="quote.id" :quote="quote" />
+      </div>
+      <a-empty v-else />
+    </template>
   </div>
 </template>

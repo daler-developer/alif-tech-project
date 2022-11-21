@@ -8,6 +8,8 @@ const store = useTypedStore();
 const isFetching = computed(() => store.state.authors.feed.isFetching);
 const authors = computed(() => store.state.authors.feed.list);
 
+const hasAuthors = computed(() => Boolean(authors.value.length))
+
 const getAuthors = () => {
   store.dispatch("authors/getFeedAuthors");
 };
@@ -16,15 +18,18 @@ onMounted(() => getAuthors());
 </script>
 
 <template>
-  <AButton @click="getAuthors()" type="primary" html-type="button" block
+  <AButton @click="getAuthors()" html-type="button" block
     >Reload</AButton
   >
   <div class="mt-[10px]">
     <div v-if="isFetching" class="text-center">
       <ASpin />
     </div>
-    <div v-else class="flex flex-col gap-[5px]">
-      <AuthorCard v-for="author in authors" :author="author" :key="author.id" />
-    </div>
+    <template v-else>
+      <div v-if="hasAuthors" class="flex flex-col gap-[5px]">
+        <AuthorCard v-for="author in authors" :author="author" :key="author.id" />
+      </div>
+      <a-empty v-else />
+    </template>
   </div>
 </template>
