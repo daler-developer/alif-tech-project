@@ -39,17 +39,19 @@ const handleEdit = () => {
   <div class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px]">
     <ATypographyText strong>{{ quote.author }}</ATypographyText>
 
-    <a-typography-paragraph>
+    <a-typography-paragraph data-test="quote-text">
       {{ quote.text }}
     </a-typography-paragraph>
 
-    <a-typography-text type="secondary"> Created: {{ formatedCreatedAt }} </a-typography-text>
+    <a-typography-text type="secondary" data-test="created-at"> Created: {{ formatedCreatedAt }} </a-typography-text>
 
     <div class=""></div>
-    <a-typography-text type="secondary"> Updated: {{ formatedUpdatedAt }} </a-typography-text>
+    <a-typography-text type="secondary" data-test="updated-at"> Updated: {{ formatedUpdatedAt }} </a-typography-text>
 
     <div class=""></div>
-    <a-typography-text v-if="hasGenres" type="secondary"> Genres: {{ genresList }} </a-typography-text>
+    <a-typography-text v-if="hasGenres" type="secondary" data-test="genres-list">
+      Genres: {{ genresList }}
+    </a-typography-text>
 
     <div class="mt-[5px] flex gap-[5px]">
       <AButton @click="handleDelete">
@@ -59,7 +61,7 @@ const handleEdit = () => {
       </AButton>
       <AButton @click="handleEdit">
         <template #icon>
-          <EditIcon />
+          <edit-icon />
         </template>
       </AButton>
     </div>

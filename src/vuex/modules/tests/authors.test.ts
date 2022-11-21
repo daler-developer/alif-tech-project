@@ -1,8 +1,8 @@
 import { mutations } from '../authors'
 import type { IState as AuthorsState } from '../authors'
-import { describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-const mockState: AuthorsState = {
+const getMockState = (): AuthorsState => ({
   feed: {
     list: [],
     isFetching: false,
@@ -10,11 +10,17 @@ const mockState: AuthorsState = {
   dropdown: {
     list: [],
   },
-}
+})
 
 vi.mock('../../../services/authorsService')
 
 describe('authors module', () => {
+  let mockState: AuthorsState
+
+  beforeEach(() => {
+    mockState = getMockState()
+  })
+
   describe('mutation', () => {
     test('setFeedAuthors', () => {
       const mockAuthors = [

@@ -18,6 +18,35 @@ export interface IState {
   }
 }
 
+export const mutations = {
+  setIsFeedQuotesFetching(state: IState, payload: boolean) {
+    state.feed.isFetching = payload
+  },
+  setFeedQuotes(state: IState, payload: IQuote[]) {
+    state.feed.list = payload
+  },
+  deleteQuote(state: IState, quoteId: string) {
+    state.feed.list = state.feed.list.filter((quote) => quote.id !== quoteId)
+  },
+  setQuoteEditing(state: IState, quote: IQuote) {
+    state.quoteEditing = quote
+  },
+  setIsFetchingRandomQuote(state: IState, to: boolean) {
+    state.randomQuote.isFetching = to
+  },
+  setRandomQuote(state: IState, quote: IQuote) {
+    state.randomQuote.data = quote
+  },
+  editQuote(state: IState, { quoteId, newQuote }: { quoteId: string; newQuote: IQuote }) {
+    state.feed.list = state.feed.list.map((quote) => {
+      if (quote.id === quoteId) {
+        return newQuote
+      }
+      return quote
+    })
+  },
+}
+
 const quotesModule: Module<IState, IRootState> = {
   namespaced: true,
   state: {
@@ -31,34 +60,7 @@ const quotesModule: Module<IState, IRootState> = {
       isFetching: false,
     },
   },
-  mutations: {
-    setIsFeedQuotesFetching(state, payload: boolean) {
-      state.feed.isFetching = payload
-    },
-    setFeedQuotes(state, payload: IQuote[]) {
-      state.feed.list = payload
-    },
-    deleteQuote(state, quoteId: string) {
-      state.feed.list = state.feed.list.filter((quote) => quote.id !== quoteId)
-    },
-    setQuoteEditing(state, quote: IQuote) {
-      state.quoteEditing = quote
-    },
-    setIsFetchingRandomQuote(state, to: boolean) {
-      state.randomQuote.isFetching = to
-    },
-    setRandomQuote(state, quote: IQuote) {
-      state.randomQuote.data = quote
-    },
-    editQuote(state, { quoteId, newQuote }: { quoteId: string; newQuote: IQuote }) {
-      state.feed.list = state.feed.list.map((quote) => {
-        if (quote.id === quoteId) {
-          return newQuote
-        }
-        return quote
-      })
-    },
-  },
+  mutations,
   actions: {
     async createQuote(
       context,
@@ -139,9 +141,6 @@ const quotesModule: Module<IState, IRootState> = {
       context.commit('setRandomQuote', randomQuote)
 
       context.commit('setIsFetchingRandomQuote', false)
-    },
-    async incrementQuoteRandomCount(context, quoteId: string) {
-      await quotesService.incrementQuoteRandomCount(quoteId)
     },
   },
 }

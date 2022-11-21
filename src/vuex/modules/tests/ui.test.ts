@@ -1,30 +1,38 @@
 import { mutations } from '../ui'
-import type { IState as UiState } from '../ui'
-import { describe, expect, test } from 'vitest'
+import type { IState as IUiState } from '../ui'
+import { beforeEach, describe, expect, test } from 'vitest'
 
-const mockState: UiState = {
+const getMockState = (): IUiState => ({
   isCreateQuoteModalVisible: true,
   isEditQuoteModalVisible: true,
-}
+})
 
 describe('ui store', () => {
-  test('commit: setIsCreateQuoteModalVisible', () => {
-    mutations.setIsCreateQuoteModalVisible(mockState, false)
+  let mockState: IUiState
 
-    expect(mockState.isCreateQuoteModalVisible).toEqual(false)
-
-    mutations.setIsCreateQuoteModalVisible(mockState, true)
-
-    expect(mockState.isCreateQuoteModalVisible).toEqual(true)
+  beforeEach(() => {
+    mockState = getMockState()
   })
 
-  test('commit: isEditQuoteModalVisible', () => {
-    mutations.setIsEditQuoteModalVisible(mockState, false)
+  describe('mutations', () => {
+    test('setIsCreateQuoteModalVisible', () => {
+      mutations.setIsCreateQuoteModalVisible(mockState, false)
 
-    expect(mockState.isEditQuoteModalVisible).toEqual(false)
+      expect(mockState.isCreateQuoteModalVisible).toEqual(false)
 
-    mutations.setIsEditQuoteModalVisible(mockState, true)
+      mutations.setIsCreateQuoteModalVisible(mockState, true)
 
-    expect(mockState.isEditQuoteModalVisible).toEqual(true)
+      expect(mockState.isCreateQuoteModalVisible).toEqual(true)
+    })
+
+    test('isEditQuoteModalVisible', () => {
+      mutations.setIsEditQuoteModalVisible(mockState, false)
+
+      expect(mockState.isEditQuoteModalVisible).toEqual(false)
+
+      mutations.setIsEditQuoteModalVisible(mockState, true)
+
+      expect(mockState.isEditQuoteModalVisible).toEqual(true)
+    })
   })
 })
