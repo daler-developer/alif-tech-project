@@ -6,20 +6,22 @@ export interface IState {
   isEditQuoteModalVisible: boolean;
 }
 
+export const mutations = {
+  setIsCreateQuoteModalVisible(state: IState, to: boolean) {
+    state.isCreateQuoteModalVisible = to;
+  },
+  setIsEditQuoteModalVisible(state: IState, to: boolean) {
+    state.isEditQuoteModalVisible = to;
+  },
+};
+
 const uiModule: Module<IState, IRootState> = {
   namespaced: true,
   state: {
     isCreateQuoteModalVisible: false,
     isEditQuoteModalVisible: false,
   },
-  mutations: {
-    setIsCreateQuoteModalVisible(state, payload: boolean) {
-      state.isCreateQuoteModalVisible = payload;
-    },
-    setIsEditQuoteModalVisible(state, payload: boolean) {
-      state.isEditQuoteModalVisible = payload;
-    },
-  },
+  mutations,
 };
 
 export default uiModule;
