@@ -68,7 +68,11 @@ const quotesModule: Module<IState, IRootState> = {
         author,
         text,
         genres,
-      }: { text: string; author: string; genres: string[] }
+      }: {
+        text: string;
+        author: string;
+        genres: string[];
+      }
     ) {
       const newQuote = await quotesService.createQuote({
         author,
@@ -87,6 +91,12 @@ const quotesModule: Module<IState, IRootState> = {
         dateTimeRange: [Dayjs, Dayjs];
         author: string | undefined;
         genre: string | undefined;
+        sort:
+          | "created-at:desc"
+          | "created-at:asc"
+          | "updated-at:desc"
+          | "updated-at:asc"
+          | undefined;
       }
     ) {
       context.commit("setIsFeedQuotesFetching", true);
@@ -121,6 +131,10 @@ const quotesModule: Module<IState, IRootState> = {
       context.commit("setIsFetchingRandomQuote", true);
 
       const randomQuote = await quotesService.getRandomQuote();
+
+      if (randomQuote) {
+        await quotesService.setQuoteIsShownInRandom(randomQuote.id);
+      }
 
       context.commit("setRandomQuote", randomQuote);
 

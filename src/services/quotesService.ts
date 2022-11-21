@@ -46,11 +46,18 @@ class QuotesService {
     dateTimeRange,
     author,
     genre,
+    sort,
   }: {
     search: string;
     dateTimeRange: [Dayjs, Dayjs];
     author: string | undefined;
     genre: string | undefined;
+    sort:
+      | "created-at:desc"
+      | "created-at:asc"
+      | "updated-at:desc"
+      | "updated-at:asc"
+      | undefined;
   }) {
     const queries: any[] = [];
 
@@ -70,6 +77,25 @@ class QuotesService {
     if (genre) {
       queries.push(where("genres", "array-contains", genre));
     }
+
+    if (sort) {
+      switch (sort) {
+        case "created-at:asc": {
+          queries.push(orderBy("createdAt", "asc"));
+        }
+        case "created-at:desc": {
+          queries.push(orderBy("createdAt", "desc"));
+        }
+        case "updated-at:asc": {
+          queries.push(orderBy("updatedAt", "asc"));
+        }
+        case "updated-at:desc": {
+          queries.push(orderBy("updatedAt", "desc"));
+        }
+      }
+    }
+
+    queries.push(orderBy("createdAt", "asc"));
 
     const docs = await getDocs(query(collection(db, "quotes"), ...queries));
 
@@ -152,6 +178,12 @@ class QuotesService {
     const randomQuote = quotes[getRandomInt(0, quotes.length - 1)];
 
     return randomQuote;
+  }
+
+  async setQuoteIsShownInRandom(quoteId: string) {
+    await updateDoc(doc(db, "quotes", quoteId), {
+      isShownInRandom: true,
+    });
   }
 }
 

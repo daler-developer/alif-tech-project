@@ -8,6 +8,9 @@ export interface IState {
     list: IAuthor[];
     isFetching: boolean;
   };
+  dropdown: {
+    list: IAuthor[];
+  };
 }
 
 const authorsModule: Module<IState, IRootState> = {
@@ -17,6 +20,9 @@ const authorsModule: Module<IState, IRootState> = {
       list: [],
       isFetching: false,
     },
+    dropdown: {
+      list: [],
+    },
   },
   mutations: {
     setFeedAuthors(state, to: IAuthor[]) {
@@ -24,6 +30,9 @@ const authorsModule: Module<IState, IRootState> = {
     },
     setIsFetchingFeedAuthors(state, to: boolean) {
       state.feed.isFetching = to;
+    },
+    setDropdownAuthors(state, to: IAuthor[]) {
+      state.dropdown.list = to;
     },
   },
   actions: {
@@ -35,6 +44,11 @@ const authorsModule: Module<IState, IRootState> = {
       context.commit("setFeedAuthors", authors);
 
       context.commit("setIsFetchingFeedAuthors", false);
+    },
+    async getDropdownAuthors(context) {
+      const authors = await authorsService.getAuthors();
+
+      context.commit("setDropdownAuthors", authors);
     },
   },
 };

@@ -12,6 +12,12 @@ interface IFilterObj {
   dateTimeRange: [Dayjs, Dayjs] | null;
   author: string | undefined;
   genre: string | undefined;
+  sort:
+    | "created-at:desc"
+    | "created-at:asc"
+    | "updated-at:desc"
+    | "updated-at:asc"
+    | undefined;
 }
 
 const filterObj = reactive<IFilterObj>({
@@ -19,20 +25,31 @@ const filterObj = reactive<IFilterObj>({
   dateTimeRange: null,
   author: undefined,
   genre: undefined,
+  sort: undefined,
 });
 
 onMounted(() => {
-  getQuotes();
+  getPageAllResources();
 });
 
 watch(filterObj, () => getQuotes());
+
+const getPageAllResources = () => {
+  getQuotes();
+  getAuthors();
+};
 
 const getQuotes = () => {
   store.dispatch("quotes/getQuotes", filterObj);
 };
 
+const getAuthors = () => {
+  store.dispatch("authors/getDropdownAuthors");
+};
+
 const quotes = computed(() => store.state.quotes.feed.list);
 const isFetchingQuotes = computed(() => store.state.quotes.feed.isFetching);
+const authors = computed(() => store.state.authors.dropdown.list);
 
 const handleCreateQuoteBtnClick = () => {
   store.commit("ui/setIsCreateQuoteModalVisible", true);
@@ -46,10 +63,18 @@ const handleCreateQuoteBtnClick = () => {
 
   <div class="mt-[10px] flex gap-[5px] tablet:flex-col">
     <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
-    <a-select allow-clear v-model:value="filterObj.author" placeholder="Author">
-      <a-select-option value="daler">daler</a-select-option>
-      <a-select-option value="aziz">aziz</a-select-option>
-      <a-select-option value="zarina">zarina</a-select-option>
+    <a-select
+      @focus="getAuthors"
+      allow-clear
+      v-model:value="filterObj.author"
+      placeholder="Author"
+    >
+      <a-select-option
+        v-for="author in authors"
+        :key="author.id"
+        :value="author.name"
+        >{{ author.name }}</a-select-option
+      >
     </a-select>
     <a-select allow-clear v-model:value="filterObj.genre" placeholder="Genre">
       <a-select-option value="g1">g1</a-select-option>
@@ -61,6 +86,16 @@ const handleCreateQuoteBtnClick = () => {
       v-model:value="filterObj.dateTimeRange"
       show-time
     />
+    <a-select allow-clear v-model:value="filterObj.sort" placeholder="Sort">
+      <a-select-option value="created-at:desc"
+        >Created at(desc)</a-select-option
+      >
+      <a-select-option value="created-at:asc">Created at(asc)</a-select-option>
+      <a-select-option value="updated-at:desc"
+        >Updated at(desc)</a-select-option
+      >
+      <a-select-option value="udpated-at-asc">Updated at(asc)</a-select-option>
+    </a-select>
   </div>
 
   <div class="mt-[10px]">
