@@ -1,13 +1,19 @@
-import type { IAuthor } from "@/models";
-import authorsService from "@/services/authorsService";
-import genresService from "@/services/genresService";
-import type { Module } from "vuex";
-import type { IRootState } from "../store";
+import type { IAuthor } from '@/models'
+import authorsService from '@/services/authorsService'
+import genresService from '@/services/genresService'
+import type { Module } from 'vuex'
+import type { IRootState } from '../store'
 
 export interface IState {
   dropdown: {
-    list: string[];
-  };
+    list: string[]
+  }
+}
+
+export const mutations = {
+  setDropdownGenres(state: IState, to: string[]) {
+    state.dropdown.list = to
+  },
 }
 
 const genresModule: Module<IState, IRootState> = {
@@ -17,18 +23,14 @@ const genresModule: Module<IState, IRootState> = {
       list: [],
     },
   },
-  mutations: {
-    setDropdownGenres(state, to: string[]) {
-      state.dropdown.list = to;
-    },
-  },
+  mutations,
   actions: {
     async getDropdownGenres(context) {
-      const genres = await genresService.getAllGenres();
+      const genres = await genresService.getAllGenres()
 
-      context.commit("setDropdownGenres", genres);
+      context.commit('setDropdownGenres', genres)
     },
   },
-};
+}
 
-export default genresModule;
+export default genresModule

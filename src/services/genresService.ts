@@ -1,6 +1,6 @@
-import { db } from "@/firebase/services";
-import type { IAuthor, IQuote } from "@/models";
-import { getRandomInt, removeDuplicatesFromArray } from "@/utils/helpers";
+import { db } from '@/firebase/services'
+import type { IAuthor, IQuote } from '@/models'
+import { getRandomInt, removeDuplicatesFromArray } from '@/utils/helpers'
 import {
   collection,
   addDoc,
@@ -16,26 +16,26 @@ import {
   startAt,
   where,
   setDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore'
 
 class GenresService {
   async getAllGenres(): Promise<string[]> {
-    const genres: string[] = [];
+    const genres: string[] = []
 
-    const docs = await getDocs(collection(db, "genres"));
+    const docs = await getDocs(collection(db, 'genres'))
 
-    docs.forEach((doc) => genres.push((doc.data() as any).genre));
+    docs.forEach((doc) => genres.push((doc.data() as any).genre))
 
-    return genres;
+    return genres
   }
 
   async createGenres(genres: string[]) {
     genres.forEach(async (genre) => {
-      await setDoc(doc(db, "genres", genre), {
+      await setDoc(doc(db, 'genres', genre), {
         genre,
-      });
-    });
+      })
+    })
   }
 }
 
-export default new GenresService();
+export default new GenresService()

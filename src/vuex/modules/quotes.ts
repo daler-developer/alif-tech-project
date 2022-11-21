@@ -1,21 +1,21 @@
-import type { IQuote } from "@/models";
-import authorsService from "@/services/authorsService";
-import quotesService from "@/services/quotesService";
-import type { Module } from "vuex";
-import type { IRootState } from "../store";
-import type { Dayjs } from "dayjs";
-import genresService from "@/services/genresService";
+import type { IQuote } from '@/models'
+import authorsService from '@/services/authorsService'
+import quotesService from '@/services/quotesService'
+import type { Module } from 'vuex'
+import type { IRootState } from '../store'
+import type { Dayjs } from 'dayjs'
+import genresService from '@/services/genresService'
 
 export interface IState {
   feed: {
-    list: IQuote[];
-    isFetching: boolean;
-  };
-  quoteEditing: IQuote | null;
+    list: IQuote[]
+    isFetching: boolean
+  }
+  quoteEditing: IQuote | null
   randomQuote: {
-    isFetching: boolean;
-    data: IQuote | null;
-  };
+    isFetching: boolean
+    data: IQuote | null
+  }
 }
 
 const quotesModule: Module<IState, IRootState> = {
@@ -33,33 +33,30 @@ const quotesModule: Module<IState, IRootState> = {
   },
   mutations: {
     setIsFeedQuotesFetching(state, payload: boolean) {
-      state.feed.isFetching = payload;
+      state.feed.isFetching = payload
     },
     setFeedQuotes(state, payload: IQuote[]) {
-      state.feed.list = payload;
+      state.feed.list = payload
     },
     deleteQuote(state, quoteId: string) {
-      state.feed.list = state.feed.list.filter((quote) => quote.id !== quoteId);
+      state.feed.list = state.feed.list.filter((quote) => quote.id !== quoteId)
     },
     setQuoteEditing(state, quote: IQuote) {
-      state.quoteEditing = quote;
+      state.quoteEditing = quote
     },
     setIsFetchingRandomQuote(state, to: boolean) {
-      state.randomQuote.isFetching = to;
+      state.randomQuote.isFetching = to
     },
     setRandomQuote(state, quote: IQuote) {
-      state.randomQuote.data = quote;
+      state.randomQuote.data = quote
     },
-    editQuote(
-      state,
-      { quoteId, newQuote }: { quoteId: string; newQuote: IQuote }
-    ) {
+    editQuote(state, { quoteId, newQuote }: { quoteId: string; newQuote: IQuote }) {
       state.feed.list = state.feed.list.map((quote) => {
         if (quote.id === quoteId) {
-          return newQuote;
+          return newQuote
         }
-        return quote;
-      });
+        return quote
+      })
     },
   },
   actions: {
@@ -70,48 +67,43 @@ const quotesModule: Module<IState, IRootState> = {
         text,
         genres,
       }: {
-        text: string;
-        author: string;
-        genres: string[];
+        text: string
+        author: string
+        genres: string[]
       }
     ) {
       const newQuote = await quotesService.createQuote({
         author,
         text,
         genres,
-      });
-      await authorsService.createAuthor(author);
-      await authorsService.addGenresToAuthor({ authorName: author, genres });
-      await genresService.createGenres(genres);
+      })
+      await authorsService.createAuthor(author)
+      await authorsService.addGenresToAuthor({ authorName: author, genres })
+      await genresService.createGenres(genres)
 
-      context.commit("setFeedQuotes", [...context.state.feed.list, newQuote]);
+      context.commit('setFeedQuotes', [...context.state.feed.list, newQuote])
     },
     async getQuotes(
       context,
       filterObj: {
-        search: string;
-        dateTimeRange: [Dayjs, Dayjs];
-        author: string | undefined;
-        genre: string | undefined;
-        sort:
-          | "created-at:desc"
-          | "created-at:asc"
-          | "updated-at:desc"
-          | "updated-at:asc"
-          | undefined;
+        search: string
+        dateTimeRange: [Dayjs, Dayjs]
+        author: string | undefined
+        genre: string | undefined
+        sort: 'created-at:desc' | 'created-at:asc' | 'updated-at:desc' | 'updated-at:asc' | undefined
       }
     ) {
-      context.commit("setIsFeedQuotesFetching", true);
+      context.commit('setIsFeedQuotesFetching', true)
 
-      const quotes = await quotesService.getQuotes(filterObj);
+      const quotes = await quotesService.getQuotes(filterObj)
 
-      context.commit("setFeedQuotes", quotes);
+      context.commit('setFeedQuotes', quotes)
 
-      context.commit("setIsFeedQuotesFetching", false);
+      context.commit('setIsFeedQuotesFetching', false)
     },
     async deleteQuote(context, quoteId: string) {
-      context.commit("deleteQuote", quoteId);
-      await quotesService.deleteQuote({ quoteId });
+      context.commit('deleteQuote', quoteId)
+      await quotesService.deleteQuote(quoteId)
     },
     async editQuote(
       context,
@@ -119,39 +111,39 @@ const quotesModule: Module<IState, IRootState> = {
         newValues,
         quoteId,
       }: {
-        quoteId: string;
-        newValues: { text: string; author: string; genres: string[] };
+        quoteId: string
+        newValues: { text: string; author: string; genres: string[] }
       }
     ) {
       const updatedQuote = await quotesService.editQuote({
         newValues,
         quoteId,
-      });
-      await authorsService.createAuthor(newValues.author);
+      })
+      await authorsService.createAuthor(newValues.author)
       await authorsService.addGenresToAuthor({
         authorName: newValues.author,
         genres: newValues.genres,
-      });
-      await genresService.createGenres(newValues.genres);
-      context.commit("editQuote", { quoteId, newQuote: updatedQuote });
+      })
+      await genresService.createGenres(newValues.genres)
+      context.commit('editQuote', { quoteId, newQuote: updatedQuote })
     },
     async getRandomQuote(context) {
-      context.commit("setIsFetchingRandomQuote", true);
+      context.commit('setIsFetchingRandomQuote', true)
 
-      const randomQuote = await quotesService.getRandomQuote();
+      const randomQuote = await quotesService.getRandomQuote()
 
       if (randomQuote) {
-        await quotesService.setQuoteIsShownInRandom(randomQuote.id);
+        await quotesService.setQuoteIsShownInRandom(randomQuote.id)
       }
 
-      context.commit("setRandomQuote", randomQuote);
+      context.commit('setRandomQuote', randomQuote)
 
-      context.commit("setIsFetchingRandomQuote", false);
+      context.commit('setIsFetchingRandomQuote', false)
     },
     async incrementQuoteRandomCount(context, quoteId: string) {
-      await quotesService.incrementQuoteRandomCount(quoteId);
+      await quotesService.incrementQuoteRandomCount(quoteId)
     },
   },
-};
+}
 
-export default quotesModule;
+export default quotesModule

@@ -1,50 +1,38 @@
 <script lang="ts" setup>
-import useTypedStore from "@/composables/useTypedStore";
-import { Modal } from "ant-design-vue";
-import type { IQuote } from "@/models";
-import {
-  DeleteOutlined as DeleteIcon,
-  EditOutlined as EditIcon,
-} from "@ant-design/icons-vue";
-import { computed } from "vue";
-import {
-  formatFirebaseTimestamp,
-  convertArrayToCommaSeperatedList,
-} from "@/utils/helpers";
+import useTypedStore from '@/composables/useTypedStore'
+import { Modal } from 'ant-design-vue'
+import type { IQuote } from '@/models'
+import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from '@ant-design/icons-vue'
+import { computed } from 'vue'
+import { formatFirebaseTimestamp, convertArrayToCommaSeperatedList } from '@/utils/helpers'
 
-const store = useTypedStore();
+const store = useTypedStore()
 
 const props = defineProps<{
-  quote: IQuote;
-}>();
+  quote: IQuote
+}>()
 
-const formatedCreatedAt = computed(() =>
-  formatFirebaseTimestamp(props.quote.createdAt)
-);
-const formatedUpdatedAt = computed(() =>
-  formatFirebaseTimestamp(props.quote.updatedAt)
-);
-const hasGenres = computed(() => Boolean(props.quote.genres.length));
-const genresList = computed(() =>
-  convertArrayToCommaSeperatedList(props.quote.genres)
-);
+const formatedCreatedAt = computed(() => formatFirebaseTimestamp(props.quote.createdAt))
+const formatedUpdatedAt = computed(() => formatFirebaseTimestamp(props.quote.updatedAt))
+const hasGenres = computed(() => Boolean(props.quote.genres.length))
+const genresList = computed(() => convertArrayToCommaSeperatedList(props.quote.genres))
 
 const handleDelete = () => {
   Modal.confirm({
-    title: "Are you sure delete this quote?",
-    okText: "Yes",
-    okType: "danger",
-    cancelText: "No",
+    title: 'Are you sure delete this quote?',
+    okText: 'Yes',
+    okType: 'danger',
+    cancelText: 'No',
     onOk() {
-      store.dispatch("quotes/deleteQuote", props.quote.id);
+      store.dispatch('quotes/deleteQuote', props.quote.id)
     },
-  });
-};
+  })
+}
 
 const handleEdit = () => {
-  store.commit("quotes/setQuoteEditing", props.quote);
-  store.commit("ui/setIsEditQuoteModalVisible", true);
-};
+  store.commit('quotes/setQuoteEditing', props.quote)
+  store.commit('ui/setIsEditQuoteModalVisible', true)
+}
 </script>
 
 <template>
@@ -55,19 +43,13 @@ const handleEdit = () => {
       {{ quote.text }}
     </a-typography-paragraph>
 
-    <a-typography-text type="secondary">
-      Created: {{ formatedCreatedAt }}
-    </a-typography-text>
+    <a-typography-text type="secondary"> Created: {{ formatedCreatedAt }} </a-typography-text>
 
     <div class=""></div>
-    <a-typography-text type="secondary">
-      Updated: {{ formatedUpdatedAt }}
-    </a-typography-text>
+    <a-typography-text type="secondary"> Updated: {{ formatedUpdatedAt }} </a-typography-text>
 
     <div class=""></div>
-    <a-typography-text v-if="hasGenres" type="secondary">
-      Genres: {{ genresList }}
-    </a-typography-text>
+    <a-typography-text v-if="hasGenres" type="secondary"> Genres: {{ genresList }} </a-typography-text>
 
     <div class="mt-[5px] flex gap-[5px]">
       <AButton @click="handleDelete">

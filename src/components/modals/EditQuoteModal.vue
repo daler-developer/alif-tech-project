@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { computed } from "vue";
-import useTypedStore from "@/composables/useTypedStore";
-import CreateOrEditQuoteForm from "../forms/CreateOrEditQuoteForm.vue";
+import { computed } from 'vue'
+import useTypedStore from '@/composables/useTypedStore'
+import CreateOrEditQuoteForm from '../forms/CreateOrEditQuoteForm.vue'
 
-const store = useTypedStore();
+const store = useTypedStore()
 
 const visible = computed<boolean>({
   get() {
-    return store.state.ui.isEditQuoteModalVisible;
+    return store.state.ui.isEditQuoteModalVisible
   },
   set(to) {
-    store.commit("ui/setIsEditQuoteModalVisible", to);
+    store.commit('ui/setIsEditQuoteModalVisible', to)
   },
-});
+})
 </script>
 
 <template>
