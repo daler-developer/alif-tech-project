@@ -16,7 +16,6 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import authorsService from "./authorsService";
 import type { Dayjs } from "dayjs";
 
 interface CreateQuoteDto {

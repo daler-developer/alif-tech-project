@@ -19,21 +19,11 @@ import {
 } from "firebase/firestore";
 
 class AuthorsService {
-  async createAuthor(name: string): Promise<IAuthor | null> {
-    const authorExists = await this.checkIfAuthorWithNameExists(name);
-
-    if (!authorExists) {
-      await setDoc(doc(db, "authors", name), {
-        name,
-        genres: [],
-      });
-
-      const createdDoc = await getDoc(doc(db, "authors", name));
-
-      return { id: createdDoc.id, ...(createdDoc.data() as any) };
-    }
-
-    return null;
+  async createAuthor(name: string): Promise<void> {
+    await setDoc(doc(db, "authors", name), {
+      name,
+      genres: [],
+    });
   }
 
   async getAuthors(): Promise<IAuthor[]> {
@@ -44,10 +34,6 @@ class AuthorsService {
     docs.forEach((doc) => authors.push({ id: doc.id, ...(doc.data() as any) }));
 
     return authors;
-  }
-
-  async checkIfAuthorWithNameExists(name: string): Promise<boolean> {
-    return (await getDoc(doc(db, "authors", name))).exists();
   }
 
   async getAuthorByName(name: string): Promise<IAuthor | null> {
