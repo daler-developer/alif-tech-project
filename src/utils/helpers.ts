@@ -1,5 +1,5 @@
-import type { Timestamp } from 'firebase/firestore'
 import dayjs from 'dayjs'
+import type { Timestamp } from 'firebase/firestore'
 
 export const getRandomInt = (min: number, max: number) => {
   min = Math.ceil(min)

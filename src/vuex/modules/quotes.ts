@@ -1,10 +1,9 @@
 import type { IQuote } from '@/models'
 import authorsService from '@/services/authorsService'
-import quotesService from '@/services/quotesService'
+import genresService from '@/services/genresService'
+import quotesService, { type IGetQuotesFitlerObj } from '@/services/quotesService'
 import type { Module } from 'vuex'
 import type { IRootState } from '../store'
-import type { Dayjs } from 'dayjs'
-import genresService from '@/services/genresService'
 
 export interface IState {
   feed: {
@@ -85,16 +84,7 @@ const quotesModule: Module<IState, IRootState> = {
 
       context.commit('setFeedQuotes', [...context.state.feed.list, newQuote])
     },
-    async getQuotes(
-      context,
-      filterObj: {
-        search: string
-        dateTimeRange: [Dayjs, Dayjs]
-        author: string | undefined
-        genre: string | undefined
-        sort: 'created-at:desc' | 'created-at:asc' | 'updated-at:desc' | 'updated-at:asc' | undefined
-      }
-    ) {
+    async getQuotes(context, filterObj: IGetQuotesFitlerObj) {
       context.commit('setIsFeedQuotesFetching', true)
 
       const quotes = await quotesService.getQuotes(filterObj)

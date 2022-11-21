@@ -18,14 +18,14 @@ onMounted(() => getAuthors())
 </script>
 
 <template>
-  <AButton @click="getAuthors()" html-type="button" block>Reload</AButton>
+  <a-button @click="getAuthors()" html-type="button" block>Reload</a-button>
   <div class="mt-[10px]">
     <div v-if="isFetching" class="text-center">
-      <ASpin />
+      <a-spin />
     </div>
     <template v-else>
       <div v-if="hasAuthors" class="flex flex-col gap-[5px]">
-        <AuthorCard v-for="author in authors" :author="author" :key="author.id" />
+        <author-card v-for="author in authors" :author="author" :key="author.id" />
       </div>
       <a-empty v-else />
     </template>

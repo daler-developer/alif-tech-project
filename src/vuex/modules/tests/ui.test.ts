@@ -1,6 +1,6 @@
-import { mutations } from '../ui'
-import type { IState as IUiState } from '../ui'
 import { beforeEach, describe, expect, test } from 'vitest'
+import type { IState as IUiState } from '../ui'
+import { mutations } from '../ui'
 
 const getMockState = (): IUiState => ({
   isCreateQuoteModalVisible: true,

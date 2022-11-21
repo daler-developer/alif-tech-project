@@ -1,10 +1,10 @@
-import { describe, test, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import Container from '../Container.vue'
+import { describe, expect, test } from 'vitest'
+import AppContainer from '../AppContainer.vue'
 
-describe('<Container />', () => {
+describe('<AppContainer />', () => {
   test('slot is rendered', () => {
-    const wrapper = mount(Container, {
+    const wrapper = mount(AppContainer, {
       slots: {
         default: 'Hello',
       },

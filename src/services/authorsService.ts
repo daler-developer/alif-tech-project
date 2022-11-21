@@ -1,22 +1,7 @@
 import { db } from '@/firebase/services'
-import type { IAuthor, IQuote } from '@/models'
-import { getRandomInt, removeDuplicatesFromArray } from '@/utils/helpers'
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
-  getDoc,
-  query,
-  orderBy,
-  limit,
-  increment,
-  startAt,
-  where,
-  setDoc,
-} from 'firebase/firestore'
+import type { IAuthor } from '@/models'
+import { removeDuplicatesFromArray } from '@/utils/helpers'
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 
 class AuthorsService {
   async createAuthor(name: string): Promise<void> {

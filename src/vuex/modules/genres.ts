@@ -1,5 +1,3 @@
-import type { IAuthor } from '@/models'
-import authorsService from '@/services/authorsService'
 import genresService from '@/services/genresService'
 import type { Module } from 'vuex'
 import type { IRootState } from '../store'

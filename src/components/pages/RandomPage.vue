@@ -18,13 +18,13 @@ const handleRandom = () => getRandomQuote()
 </script>
 
 <template>
-  <AButton block type="primary" html-type="button" @click="handleRandom"> Random </AButton>
+  <a-button block type="primary" html-type="button" @click="handleRandom"> Random </a-button>
   <div class="mt-[10px]">
     <div v-if="isFetching" class="text-center">
-      <ASpin />
+      <a-spin />
     </div>
     <div v-else-if="Boolean(quote)">
-      <QuoteCard :quote="quote!" />
+      <quote-card :quote="quote!" />
     </div>
   </div>
 </template>

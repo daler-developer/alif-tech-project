@@ -2,26 +2,29 @@ import { db } from '@/firebase/services'
 import type { IQuote } from '@/models'
 import { getRandomInt } from '@/utils/helpers'
 import {
-  collection,
   addDoc,
-  getDocs,
+  collection,
   deleteDoc,
   doc,
-  updateDoc,
   getDoc,
-  query,
+  getDocs,
   orderBy,
-  limit,
-  increment,
-  startAt,
+  query,
+  updateDoc,
   where,
 } from 'firebase/firestore'
-import type { Dayjs } from 'dayjs'
 
 interface CreateQuoteDto {
   text: string
   author: string
   genres: string[]
+}
+
+export interface IGetQuotesFitlerObj {
+  search: string
+  author: string | undefined
+  genre: string | undefined
+  sort: 'created-at:desc' | 'created-at:asc' | 'updated-at:desc' | 'updated-at:asc' | undefined
 }
 
 class QuotesService {
@@ -40,28 +43,11 @@ class QuotesService {
     return { id: doc.id, ...(doc.data() as any) }
   }
 
-  async getQuotes({
-    search,
-    dateTimeRange,
-    author,
-    genre,
-    sort,
-  }: {
-    search: string
-    dateTimeRange: [Dayjs, Dayjs]
-    author: string | undefined
-    genre: string | undefined
-    sort: 'created-at:desc' | 'created-at:asc' | 'updated-at:desc' | 'updated-at:asc' | undefined
-  }) {
+  async getQuotes({ search, author, genre, sort }: IGetQuotesFitlerObj) {
     const queries: any[] = []
 
     if (search) {
       queries.push(where('text', '==', search))
-    }
-
-    if (dateTimeRange) {
-      queries.push(where('createdAt', '>=', dateTimeRange[0].toDate()))
-      queries.push(where('createdAt', '<=', dateTimeRange[1].toDate()))
     }
 
     if (author) {

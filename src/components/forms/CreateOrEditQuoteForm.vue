@@ -117,7 +117,7 @@ const handleGenresInputChange = (genres: string[]) => {
     <div class="mt-[5px]"></div>
 
     <a-typography-text type="danger"> required and should be only letters </a-typography-text>
-    <ASelect
+    <a-select
       class="w-full"
       mode="tags"
       placeholder="Genres"
@@ -125,9 +125,9 @@ const handleGenresInputChange = (genres: string[]) => {
       @change="handleGenresInputChange"
     />
 
-    <AButton :loading="form.isSubmitting.value" class="mt-[10px]" type="primary" block html-type="submit">
+    <a-button :loading="form.isSubmitting.value" class="mt-[10px]" type="primary" block html-type="submit">
       <template v-if="mode === 'create'"> Create </template>
       <template v-else> Edit </template>
-    </AButton>
+    </a-button>
   </form>
 </template>

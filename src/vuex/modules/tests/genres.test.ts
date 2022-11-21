@@ -1,6 +1,6 @@
-import { mutations } from '../genres'
+import { beforeEach, describe, expect, test } from 'vitest'
 import type { IState as IGenresState } from '../genres'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { mutations } from '../genres'
 
 const getMockState = (): IGenresState => ({
   dropdown: {

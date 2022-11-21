@@ -1,10 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import './assets/styles.css'
-import store, { key } from './vuex/store'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
+import { createApp } from 'vue'
+import App from './App.vue'
+import './assets/styles.css'
+import router from './router'
+import store, { key } from './vuex/store'
 
 const app = createApp(App)
 

@@ -1,6 +1,5 @@
+import { doc, getDoc, getDocs, setDoc } from 'firebase/firestore'
 import { afterEach, describe, expect, test, vi, type Mock } from 'vitest'
-import { getDocs, getDoc, setDoc, doc } from 'firebase/firestore'
-import firestore from 'firebase/firestore'
 import authorsService from '../authorsService'
 
 vi.mock('firebase/firestore')

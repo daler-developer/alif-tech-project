@@ -1,8 +1,8 @@
-import { describe, test, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import QuoteCard from '../QuoteCard.vue'
 import type { IQuote } from '@/models'
+import { mount } from '@vue/test-utils'
 import { Timestamp } from 'firebase/firestore'
+import { describe, expect, test, vi } from 'vitest'
+import QuoteCard from '../QuoteCard.vue'
 
 describe('<QuoteCard />', () => {
   test('text is rendered', () => {
@@ -103,5 +103,32 @@ describe('<QuoteCard />', () => {
     })
 
     expect(wrapper.get('[data-test="updated-at"]').text()).toContain('Updated: 01:01:1970 06:16:40')
+  })
+
+  test.skip('edit button', async () => {
+    const mockStore = {
+      commit: vi.fn(),
+    }
+
+    const wrapper = mount(QuoteCard, {
+      props: {
+        quote: {
+          id: 'id001',
+          author: 'daler',
+          createdAt: new Timestamp(100, 100),
+          updatedAt: new Timestamp(1000, 1000),
+          genres: [],
+          isShownInRandom: false,
+          text: 'text',
+        },
+      },
+      global: {
+        plugins: [],
+      },
+    })
+
+    await wrapper.get('[data-test="edit-button"]').trigger('click')
+
+    expect(mockStore.commit.mock.calls.length).toEqual(1)
   })
 })

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import useTypedStore from '@/composables/useTypedStore'
+import { computed } from 'vue'
 import CreateOrEditQuoteForm from '../forms/CreateOrEditQuoteForm.vue'
 
 const store = useTypedStore()
@@ -16,7 +16,7 @@ const visible = computed<boolean>({
 </script>
 
 <template>
-  <AModal v-model:visible="visible" :footer="null" title="Create quote">
-    <CreateOrEditQuoteForm mode="create" @submit-succeeded="visible = false" />
-  </AModal>
+  <a-modal data-test="modal" v-model:visible="visible" :footer="null" title="Create quote">
+    <create-or-edit-quote-form mode="create" @submit-succeeded="visible = false" />
+  </a-modal>
 </template>

@@ -1,7 +1,7 @@
-import { mutations } from '../quotes'
-import type { IState as IQuotesState } from '../quotes'
-import { beforeEach, describe, expect, test } from 'vitest'
 import { Timestamp } from 'firebase/firestore'
+import { beforeEach, describe, expect, test } from 'vitest'
+import type { IState as IQuotesState } from '../quotes'
+import { mutations } from '../quotes'
 
 const getMockState = (): IQuotesState => ({
   feed: {

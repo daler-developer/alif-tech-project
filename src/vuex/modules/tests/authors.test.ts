@@ -1,6 +1,6 @@
-import { mutations } from '../authors'
-import type { IState as AuthorsState } from '../authors'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
+import type { IState as AuthorsState } from '../authors'
+import { mutations } from '../authors'
 
 const getMockState = (): AuthorsState => ({
   feed: {

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import useTypedStore from '@/composables/useTypedStore'
-import { Modal } from 'ant-design-vue'
 import type { IQuote } from '@/models'
+import { convertArrayToCommaSeperatedList, formatFirebaseTimestamp } from '@/utils/helpers'
 import { DeleteOutlined as DeleteIcon, EditOutlined as EditIcon } from '@ant-design/icons-vue'
+import { Modal } from 'ant-design-vue'
 import { computed } from 'vue'
-import { formatFirebaseTimestamp, convertArrayToCommaSeperatedList } from '@/utils/helpers'
 
 const store = useTypedStore()
 
@@ -37,7 +37,7 @@ const handleEdit = () => {
 
 <template>
   <div class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px]">
-    <ATypographyText strong>{{ quote.author }}</ATypographyText>
+    <a-typography-text strong>{{ quote.author }}</a-typography-text>
 
     <a-typography-paragraph data-test="quote-text">
       {{ quote.text }}
@@ -54,16 +54,16 @@ const handleEdit = () => {
     </a-typography-text>
 
     <div class="mt-[5px] flex gap-[5px]">
-      <AButton @click="handleDelete">
+      <a-button @click="handleDelete">
         <template #icon>
           <delete-icon />
         </template>
-      </AButton>
-      <AButton @click="handleEdit">
+      </a-button>
+      <a-button @click="handleEdit" data-test="edit-button">
         <template #icon>
           <edit-icon />
         </template>
-      </AButton>
+      </a-button>
     </div>
   </div>
 </template>

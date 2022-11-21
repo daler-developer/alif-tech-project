@@ -1,26 +1,14 @@
 <script lang="ts" setup>
 import useTypedStore from '@/composables/useTypedStore'
-import { computed } from 'vue'
-import { onMounted, ref, reactive, watch } from 'vue'
-import QuoteCard from '../QuoteCard.vue'
-import type { Dayjs } from 'dayjs'
+import type { IGetQuotesFitlerObj } from '@/services/quotesService'
 import { Modal } from 'ant-design-vue'
-import { Timestamp } from '@firebase/firestore'
-import { formatFirebaseTimestamp } from '@/utils/helpers'
+import { computed, onMounted, reactive, watch } from 'vue'
+import QuoteCard from '../QuoteCard.vue'
 
 const store = useTypedStore()
 
-interface IFilterObj {
-  search: string
-  dateTimeRange: [Dayjs, Dayjs] | null
-  author: string | undefined
-  genre: string | undefined
-  sort: 'created-at:desc' | 'created-at:asc' | 'updated-at:desc' | 'updated-at:asc' | undefined
-}
-
-const filterObj = reactive<IFilterObj>({
+const filterObj = reactive<IGetQuotesFitlerObj>({
   search: '',
-  dateTimeRange: null,
   author: undefined,
   genre: undefined,
   sort: undefined,
@@ -71,7 +59,7 @@ const handleCreateQuoteBtnClick = () => {
 </script>
 
 <template>
-  <AButton block type="primary" @click="handleCreateQuoteBtnClick">Create</AButton>
+  <a-button block type="primary" @click="handleCreateQuoteBtnClick">Create</a-button>
 
   <div class="mt-[10px] flex gap-[5px] flex-wrap">
     <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
@@ -94,11 +82,11 @@ const handleCreateQuoteBtnClick = () => {
 
   <div class="mt-[10px]">
     <div v-if="isFetchingQuotes" class="text-center">
-      <ASpin />
+      <a-spin />
     </div>
     <template v-else>
       <div v-if="hasQuotes" class="flex flex-col gap-[10px]">
-        <QuoteCard v-for="quote in quotes" :key="quote.id" :quote="quote" />
+        <quote-card v-for="quote in quotes" :key="quote.id" :quote="quote" />
       </div>
       <a-empty v-else />
     </template>
