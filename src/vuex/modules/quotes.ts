@@ -4,6 +4,7 @@ import quotesService from "@/services/quotesService";
 import type { Module } from "vuex";
 import type { IRootState } from "../store";
 import type { Dayjs } from "dayjs";
+import genresService from "@/services/genresService";
 
 export interface IState {
   feed: {
@@ -79,8 +80,9 @@ const quotesModule: Module<IState, IRootState> = {
         text,
         genres,
       });
-      await authorsService.createAuthorIfNotExists({ name: author });
+      await authorsService.createAuthor(author);
       await authorsService.addGenresToAuthor({ authorName: author, genres });
+      await genresService.createGenres(genres);
 
       context.commit("setFeedQuotes", [...context.state.feed.list, newQuote]);
     },
@@ -125,6 +127,12 @@ const quotesModule: Module<IState, IRootState> = {
         newValues,
         quoteId,
       });
+      await authorsService.createAuthor(newValues.author);
+      await authorsService.addGenresToAuthor({
+        authorName: newValues.author,
+        genres: newValues.genres,
+      });
+      await genresService.createGenres(newValues.genres);
       context.commit("editQuote", { quoteId, newQuote: updatedQuote });
     },
     async getRandomQuote(context) {

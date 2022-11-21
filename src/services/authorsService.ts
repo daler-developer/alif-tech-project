@@ -19,11 +19,7 @@ import {
 } from "firebase/firestore";
 
 class AuthorsService {
-  async createAuthorIfNotExists({
-    name,
-  }: {
-    name: string;
-  }): Promise<IAuthor | null> {
+  async createAuthor(name: string): Promise<IAuthor | null> {
     const authorExists = await this.checkIfAuthorWithNameExists(name);
 
     if (!authorExists) {

@@ -19,10 +19,22 @@ import {
 } from "firebase/firestore";
 
 class GenresService {
-  async getAllGenres() {
-    const allAuthorsDocs = await getDocs(collection(db, "authors"));
+  async getAllGenres(): Promise<string[]> {
+    const genres: string[] = [];
 
-    allAuthorsDocs.forEach((doc) => {});
+    const docs = await getDocs(collection(db, "genres"));
+
+    docs.forEach((doc) => genres.push((doc.data() as any).genre));
+
+    return genres;
+  }
+
+  async createGenres(genres: string[]) {
+    genres.forEach(async (genre) => {
+      await setDoc(doc(db, "genres", genre), {
+        genre,
+      });
+    });
   }
 }
 

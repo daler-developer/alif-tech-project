@@ -15,16 +15,21 @@ const hasGenres = computed(() => Boolean(props.author.genres.length));
 
 <template>
   <div
-    @click="showGenres = !showGenres"
     class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px] cursor-pointer"
   >
-    {{ author.name }}
+    <div class="flex items-center justify-between">
+      <span>
+        {{ author.name }}
+      </span>
+      <a-button @click="showGenres = !showGenres"> Show genres </a-button>
+    </div>
 
-    <template v-if="showGenres && hasGenres">
+    <template v-if="showGenres">
       <div class="mt-[5px]"></div>
-      <a-typography-text type="secondary">
+      <a-typography-text v-if="hasGenres" type="secondary">
         Genres: {{ formatedGenres }}
       </a-typography-text>
+      <a-typography-text v-else type="secondary"> No genres </a-typography-text>
     </template>
   </div>
 </template>

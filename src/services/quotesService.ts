@@ -82,20 +82,22 @@ class QuotesService {
       switch (sort) {
         case "created-at:asc": {
           queries.push(orderBy("createdAt", "asc"));
+          break;
         }
         case "created-at:desc": {
           queries.push(orderBy("createdAt", "desc"));
+          break;
         }
         case "updated-at:asc": {
           queries.push(orderBy("updatedAt", "asc"));
+          break;
         }
         case "updated-at:desc": {
           queries.push(orderBy("updatedAt", "desc"));
+          break;
         }
       }
     }
-
-    queries.push(orderBy("createdAt", "asc"));
 
     const docs = await getDocs(query(collection(db, "quotes"), ...queries));
 

@@ -90,7 +90,8 @@ const handleSubmit = form.handleSubmit(
     emit("submitSucceeded");
   },
   (e) => {
-    console.log(e.errors);
+    alert("invalid data!");
+    form.resetForm();
   }
 );
 
@@ -123,7 +124,7 @@ const handleGenresInputChange = (genres: string[]) => {
 
     <div class="mt-[5px]"></div>
 
-    <a-typography-text v-if="genresField.errorMessage" type="danger">
+    <a-typography-text type="danger">
       required and should be only letters
     </a-typography-text>
     <ASelect

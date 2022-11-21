@@ -4,6 +4,7 @@ import { computed } from "@vue/reactivity";
 import { onMounted, ref, reactive, watch } from "vue";
 import QuoteCard from "../QuoteCard.vue";
 import type { Dayjs } from "dayjs";
+import { Modal } from "ant-design-vue";
 
 const store = useTypedStore();
 
@@ -30,13 +31,22 @@ const filterObj = reactive<IFilterObj>({
 
 onMounted(() => {
   getPageAllResources();
+  showWarningModal();
 });
 
 watch(filterObj, () => getQuotes());
 
+const showWarningModal = () => {
+  Modal.confirm({
+    content:
+      "Firebase restricts querying on multiple fields unless you specify required indexes. However there are too many combinations of fields to specify those indexes. So please only specify one criteria when querying quotes",
+  });
+};
+
 const getPageAllResources = () => {
   getQuotes();
   getAuthors();
+  getGenres();
 };
 
 const getQuotes = () => {
@@ -47,9 +57,14 @@ const getAuthors = () => {
   store.dispatch("authors/getDropdownAuthors");
 };
 
+const getGenres = () => {
+  store.dispatch("genres/getDropdownGenres");
+};
+
 const quotes = computed(() => store.state.quotes.feed.list);
 const isFetchingQuotes = computed(() => store.state.quotes.feed.isFetching);
 const authors = computed(() => store.state.authors.dropdown.list);
+const genres = computed(() => store.state.genres.dropdown.list);
 
 const handleCreateQuoteBtnClick = () => {
   store.commit("ui/setIsCreateQuoteModalVisible", true);
@@ -61,7 +76,7 @@ const handleCreateQuoteBtnClick = () => {
     >Create</AButton
   >
 
-  <div class="mt-[10px] flex gap-[5px] tablet:flex-col">
+  <div class="mt-[10px] flex gap-[5px] flex-wrap">
     <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
     <a-select
       @focus="getAuthors"
@@ -76,17 +91,27 @@ const handleCreateQuoteBtnClick = () => {
         >{{ author.name }}</a-select-option
       >
     </a-select>
-    <a-select allow-clear v-model:value="filterObj.genre" placeholder="Genre">
-      <a-select-option value="g1">g1</a-select-option>
-      <a-select-option value="g2">g2</a-select-option>
-      <a-select-option value="g3">g3</a-select-option>
+    <a-select
+      @focus="getGenres()"
+      allow-clear
+      v-model:value="filterObj.genre"
+      placeholder="Genre"
+    >
+      <a-select-option v-for="genre in genres" :key="genre" :value="genre">{{
+        genre
+      }}</a-select-option>
     </a-select>
     <a-range-picker
       allow-clear
       v-model:value="filterObj.dateTimeRange"
       show-time
     />
-    <a-select allow-clear v-model:value="filterObj.sort" placeholder="Sort">
+    <a-select
+      class="w-[150px]"
+      allow-clear
+      v-model:value="filterObj.sort"
+      placeholder="Sort"
+    >
       <a-select-option value="created-at:desc"
         >Created at(desc)</a-select-option
       >
@@ -94,7 +119,7 @@ const handleCreateQuoteBtnClick = () => {
       <a-select-option value="updated-at:desc"
         >Updated at(desc)</a-select-option
       >
-      <a-select-option value="udpated-at-asc">Updated at(asc)</a-select-option>
+      <a-select-option value="udpated-at:asc">Updated at(asc)</a-select-option>
     </a-select>
   </div>
 
