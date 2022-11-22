@@ -12,6 +12,7 @@ const filterObj = reactive<IGetQuotesFitlerObj>({
   author: undefined,
   genre: undefined,
   sort: undefined,
+  dateTimeRange: null,
 })
 
 onMounted(() => {
@@ -90,6 +91,7 @@ const clearFilter = () => {
     >
       <a-select-option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</a-select-option>
     </a-select>
+    <a-range-picker @update:value="clearFilter()" allow-clear v-model:value="filterObj.dateTimeRange" show-time />
     <a-select
       @update:value="clearFilter()"
       class="w-[150px]"
