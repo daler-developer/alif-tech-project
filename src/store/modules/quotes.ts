@@ -78,7 +78,7 @@ const quotesModule: Module<IState, IRootState> = {
         text,
         genres,
       })
-      await authorsService.createAuthor(author)
+      await authorsService.createAuthorIfNotExists(author)
       await authorsService.addGenresToAuthor({ authorName: author, genres })
       await genresService.createGenres(genres)
 
@@ -111,7 +111,7 @@ const quotesModule: Module<IState, IRootState> = {
         newValues,
         quoteId,
       })
-      await authorsService.createAuthor(newValues.author)
+      await authorsService.createAuthorIfNotExists(newValues.author)
       await authorsService.addGenresToAuthor({
         authorName: newValues.author,
         genres: newValues.genres,

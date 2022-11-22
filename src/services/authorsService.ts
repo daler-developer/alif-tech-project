@@ -4,11 +4,26 @@ import { removeDuplicatesFromArray } from '@/utils/helpers'
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 
 class AuthorsService {
-  async createAuthor(name: string): Promise<void> {
+  async createAuthorIfNotExists(name: string): Promise<void> {
+    const authorExists = await this.authorExists(name)
+
+    if (!authorExists) {
+      alert('create')
+      await this.createAuthor(name)
+    }
+  }
+
+  async createAuthor(name: string) {
     await setDoc(doc(db, 'authors', name), {
       name,
       genres: [],
     })
+  }
+
+  async authorExists(name: string) {
+    const docRef = await getDoc(doc(db, 'authors', name))
+
+    return docRef.exists()
   }
 
   async getAuthors(): Promise<IAuthor[]> {
