@@ -89,7 +89,7 @@ const handleSubmit = form.handleSubmit(
     form.resetForm()
     emit('submitSucceeded')
   },
-  (e) => {
+  () => {
     alert('invalid data!')
     form.resetForm()
   }
@@ -105,19 +105,20 @@ const handleGenresInputChange = (genres: string[]) => {
     <a-typography-text type="danger">
       {{ textField.errorMessage.value }}
     </a-typography-text>
-    <ATextarea placeholder="Text" v-model:value="textField.value.value" name="text" />
+    <a-textarea data-test="text-input" placeholder="Text" v-model:value="textField.value.value" name="text" />
 
     <div class="mt-[5px]"></div>
 
     <a-typography-text type="danger">
       {{ authorField.errorMessage.value }}
     </a-typography-text>
-    <AInput placeholder="Author" v-model:value="authorField.value.value" name="author" />
+    <a-input data-test="author-input" placeholder="Author" v-model:value="authorField.value.value" name="author" />
 
     <div class="mt-[5px]"></div>
 
     <a-typography-text type="danger"> required and should be only letters </a-typography-text>
     <a-select
+      data-test="genres-input"
       class="w-full"
       mode="tags"
       placeholder="Genres"

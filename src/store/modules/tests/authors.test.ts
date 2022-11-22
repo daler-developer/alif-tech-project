@@ -70,8 +70,4 @@ describe('authors module', () => {
       expect(mockState.dropdown.list).toEqual(mockAuthors)
     })
   })
-
-  // describe('actions', () => {
-  //   test('getFeedAuthors', () => {})
-  // })
 })

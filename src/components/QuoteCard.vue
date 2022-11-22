@@ -54,7 +54,7 @@ const handleEdit = () => {
     </a-typography-text>
 
     <div class="mt-[5px] flex gap-[5px]">
-      <a-button @click="handleDelete">
+      <a-button @click="handleDelete" data-test="delete-button">
         <template #icon>
           <delete-icon />
         </template>

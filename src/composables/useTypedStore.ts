@@ -1,5 +1,5 @@
 import { useStore } from 'vuex'
-import { key } from '../vuex/store'
+import { key } from '../store/store'
 
 export default () => {
   return useStore(key)

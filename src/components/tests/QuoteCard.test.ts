@@ -1,4 +1,5 @@
 import type { IQuote } from '@/models'
+import { createVuexStore, key } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import { Timestamp } from 'firebase/firestore'
 import { describe, expect, test, vi } from 'vitest'
@@ -105,30 +106,40 @@ describe('<QuoteCard />', () => {
     expect(wrapper.get('[data-test="updated-at"]').text()).toContain('Updated: 01:01:1970 06:16:40')
   })
 
-  test.skip('edit button', async () => {
-    const mockStore = {
-      commit: vi.fn(),
+  test('edit button', async () => {
+    const store = createVuexStore()
+
+    const spyCommit = vi.spyOn(store, 'commit')
+
+    const mockQuote = {
+      id: 'id001',
+      author: 'daler',
+      createdAt: new Timestamp(100, 100),
+      updatedAt: new Timestamp(1000, 1000),
+      genres: [],
+      isShownInRandom: false,
+      text: 'text',
     }
 
     const wrapper = mount(QuoteCard, {
       props: {
-        quote: {
-          id: 'id001',
-          author: 'daler',
-          createdAt: new Timestamp(100, 100),
-          updatedAt: new Timestamp(1000, 1000),
-          genres: [],
-          isShownInRandom: false,
-          text: 'text',
-        },
+        quote: mockQuote,
       },
       global: {
-        plugins: [],
+        provide: {
+          [key]: store,
+        },
       },
     })
 
     await wrapper.get('[data-test="edit-button"]').trigger('click')
 
-    expect(mockStore.commit.mock.calls.length).toEqual(1)
+    expect(spyCommit).toHaveBeenCalledTimes(2)
+
+    expect(spyCommit.mock.calls[0][0]).toEqual('quotes/setQuoteEditing')
+    expect(spyCommit.mock.calls[0][1]).toEqual(mockQuote)
+
+    expect(spyCommit.mock.calls[1][0]).toEqual('ui/setIsEditQuoteModalVisible')
+    expect(spyCommit.mock.calls[1][1]).toEqual(true)
   })
 })

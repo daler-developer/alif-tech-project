@@ -15,7 +15,7 @@ const filterObj = reactive<IGetQuotesFitlerObj>({
 })
 
 onMounted(() => {
-  getPageAllResources()
+  getPageResources()
   showWarningModal()
 })
 
@@ -28,7 +28,7 @@ const showWarningModal = () => {
   })
 }
 
-const getPageAllResources = () => {
+const getPageResources = () => {
   getQuotes()
   getAuthors()
   getGenres()
@@ -62,7 +62,7 @@ const handleCreateQuoteBtnClick = () => {
   <a-button block type="primary" @click="handleCreateQuoteBtnClick">Create</a-button>
 
   <div class="mt-[10px] flex gap-[5px] flex-wrap">
-    <AInputSearch v-model:value="filterObj.search" placeholder="Search" />
+    <a-input-search v-model:value="filterObj.search" placeholder="Search" />
     <a-select @focus="getAuthors" allow-clear v-model:value="filterObj.author" placeholder="Author">
       <a-select-option v-for="author in authors" :key="author.id" :value="author.name">{{
         author.name
@@ -75,9 +75,9 @@ const handleCreateQuoteBtnClick = () => {
       <a-select-option value="created-at:desc">Created at(desc)</a-select-option>
       <a-select-option value="created-at:asc">Created at(asc)</a-select-option>
       <a-select-option value="updated-at:desc">Updated at(desc)</a-select-option>
-      <a-select-option value="udpated-at:asc">Updated at(asc)</a-select-option>
+      <a-select-option value="updated-at:asc">Updated at(asc)</a-select-option>
     </a-select>
-    <a-button html-type="button" @click="getPageAllResources()">Reload</a-button>
+    <a-button html-type="button" @click="getPageResources()">Reload</a-button>
   </div>
 
   <div class="mt-[10px]">

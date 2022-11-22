@@ -12,7 +12,7 @@ const hasGenres = computed(() => Boolean(props.author.genres.length))
 </script>
 
 <template>
-  <div class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px] cursor-pointer">
+  <div class="p-[5px] border-solid border-[1px] border-gray-300 rounded-[2px]">
     <div class="flex items-center justify-between">
       <span data-test="author-name">
         {{ author.name }}

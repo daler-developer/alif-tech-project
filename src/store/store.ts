@@ -19,13 +19,15 @@ export interface IRootState {
 
 export const key: InjectionKey<Store<IRootState>> = Symbol()
 
-const store = createStore<IRootState>({
-  modules: {
-    ui: uiModule,
-    quotes: quotesModule,
-    authors: authorsModule,
-    genres: genresModule,
-  },
-})
+export const createVuexStore = () => {
+  return createStore<IRootState>({
+    modules: {
+      ui: uiModule,
+      quotes: quotesModule,
+      authors: authorsModule,
+      genres: genresModule,
+    },
+  })
+}
 
-export default store
+export default createVuexStore()
