@@ -56,22 +56,47 @@ const hasQuotes = computed(() => Boolean(quotes.value.length))
 const handleCreateQuoteBtnClick = () => {
   store.commit('ui/setIsCreateQuoteModalVisible', true)
 }
+
+const clearFilter = () => {
+  filterObj.search = ''
+  filterObj.author = undefined
+  filterObj.genre = undefined
+  filterObj.sort = undefined
+}
 </script>
 
 <template>
   <a-button block type="primary" @click="handleCreateQuoteBtnClick">Create</a-button>
 
   <div class="mt-[10px] flex gap-[5px] flex-wrap">
-    <a-input-search v-model:value="filterObj.search" placeholder="Search" />
-    <a-select @focus="getAuthors" allow-clear v-model:value="filterObj.author" placeholder="Author">
+    <a-input-search @update:value="clearFilter()" v-model:value="filterObj.search" placeholder="Search" />
+    <a-select
+      @focus="getAuthors"
+      @update:value="clearFilter()"
+      allow-clear
+      v-model:value="filterObj.author"
+      placeholder="Author"
+    >
       <a-select-option v-for="author in authors" :key="author.id" :value="author.name">{{
         author.name
       }}</a-select-option>
     </a-select>
-    <a-select @focus="getGenres()" allow-clear v-model:value="filterObj.genre" placeholder="Genre">
+    <a-select
+      @focus="getGenres()"
+      @update:value="clearFilter()"
+      allow-clear
+      v-model:value="filterObj.genre"
+      placeholder="Genre"
+    >
       <a-select-option v-for="genre in genres" :key="genre" :value="genre">{{ genre }}</a-select-option>
     </a-select>
-    <a-select class="w-[150px]" allow-clear v-model:value="filterObj.sort" placeholder="Sort">
+    <a-select
+      @update:value="clearFilter()"
+      class="w-[150px]"
+      allow-clear
+      v-model:value="filterObj.sort"
+      placeholder="Sort"
+    >
       <a-select-option value="created-at:desc">Created at(desc)</a-select-option>
       <a-select-option value="created-at:asc">Created at(asc)</a-select-option>
       <a-select-option value="updated-at:desc">Updated at(desc)</a-select-option>
