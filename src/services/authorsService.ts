@@ -8,7 +8,6 @@ class AuthorsService {
     const authorExists = await this.authorExists(name)
 
     if (!authorExists) {
-      alert('create')
       await this.createAuthor(name)
     }
   }
